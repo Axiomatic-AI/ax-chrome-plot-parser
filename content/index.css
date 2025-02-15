@@ -1,0 +1,291 @@
+:root {
+  --ax-logo: url("./ax_logo.svg");
+}
+
+.ax-logo {
+  background-image: var(--ax-logo);
+  background-size: contain;
+  background-repeat: no-repeat;
+  min-width: 100%;
+  min-height: 100%;
+  position: absolute;
+  z-index: 2000;
+  transform: scale(0.5);
+  animation: shimmerImg 3s infinite;
+  top: 0;
+  left: 0;
+}
+
+.ax-inline-logo {
+  height: 1.1em;
+  margin-right: 15px;
+  transform: translateY(0.18em);
+}
+
+img#fake-image,
+.jcrop-holder,
+.jcrop-holder img,
+.jcrop-tracker {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  min-width: 100% !important;
+  min-height: 100% !important;
+}
+
+img#fake-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.jcrop-holder {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  z-index: 2147483647 !important;
+}
+body {
+  overflow: hidden;
+  background: #121212;
+  color: #e0e0e0;
+}
+
+.ax-result-container {
+  display: none;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+}
+
+a {
+  text-decoration: none;
+}
+
+h1 {
+  margin-left: 20px;
+  font-size: 2em;
+  text-align: left;
+  color: #6eb700;
+  text-decoration: none;
+  position: relative;
+}
+
+h1::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #6eb700;
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+
+h1:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+.ax-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden; /* Prevents overflow */
+}
+
+.ax-table-container {
+  flex: 1;
+  overflow: auto; /* Allows scrolling if content overflows */
+  margin-left: 10px;
+  max-width: 50%;
+  max-height: 90vh; /* Ensures the container does not exceed the viewport height */
+  scrollbar-width: none;
+}
+
+.ax-table {
+  width: 80%;
+  margin: 20px auto;
+  border-collapse: collapse;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  flex: 1;
+  max-height: 100%; /* Ensures the table does not exceed its container's height */
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  margin-bottom: 50px;
+}
+
+.ax-table th,
+.ax-table td {
+  padding: 12px 15px;
+  border: 1px solid #333;
+  text-align: left;
+}
+
+.ax-table th {
+  background-color: #333;
+  color: #fff;
+  font-weight: bold;
+}
+
+.ax-table tr:nth-child(even) {
+  background-color: #2c2c2c;
+}
+
+.ax-table tr:hover {
+  background-color: #3a3a3a;
+}
+
+.ax-download-button {
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 20px auto;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #6eb700;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.ax-download-button:hover {
+  background-color: #99ff00;
+  color: black;
+  transform: scale(1.05) color #000;
+}
+
+.ax-download-button:active {
+  background-color: #89e302;
+  color: black;
+  transform: scale(1) color #000;
+}
+
+.ax-button-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.color-label {
+  display: block;
+  width: 20px;
+  height: 20px;
+  margin: 0 auto;
+  background-color: #007bff;
+}
+.ax-canvas {
+  display: block;
+  margin-left: 20px;
+  margin-right: 20px;
+  border: 5px solid #6eb700;
+  border-radius: 15px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  max-width: 50%;
+  max-height: 100%;
+}
+
+.ax-canvas:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
+}
+
+.shimmer-stack {
+  animation: shimmerImg 3s infinite, expandShrink 3s infinite;
+}
+
+/* Define shimmerImg animation */
+@keyframes shimmerImg {
+  0%,
+  100% {
+    background-position: 0% 0%;
+    opacity: 0.4;
+  }
+
+  80% {
+    background-position: 100% 0%;
+    opacity: 0.8;
+  }
+}
+
+/* Define expandShrink animation */
+@keyframes expandShrink {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+p {
+  font-size: 1em;
+  line-height: 1.5;
+  color: #e0e0e0;
+  margin: 20px 0;
+  padding: 0 0;
+}
+
+form {
+  min-width: 50%;
+}
+
+form label {
+  display: block;
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  color: #e0e0e0;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+form input[type="number"],
+form select,
+form textarea {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 20px;
+  font-size: 1.5em;
+  border: 1px solid #333;
+  border-radius: 5px;
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  box-sizing: border-box;
+}
+
+form button {
+  display: inline-block;
+  padding: 10px 30px;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #fff;
+  background-color: #6eb700;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+form button:hover {
+  background-color: #99ff00;
+  color: black;
+  transform: scale(1.05);
+}
+
+form button:active {
+  background-color: #89e302;
+  color: black;
+  transform: scale(1);
+}

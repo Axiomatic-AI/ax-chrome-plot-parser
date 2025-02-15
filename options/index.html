@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Axiomatic API Key</title>
+    <link rel="stylesheet" href="/content/index.css" />
+  </head>
+
+  <body>
+    <div
+      style="
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      "
+    >
+      <form id="api-key-form">
+        <label for="api-key">Enter your Axiomatic API Key:</label>
+        <input type="text" id="api-key" name="api-key" required />
+        <div>
+          <p id="outcome-label" style="display: none">
+            Press Save to store your key.
+          </p>
+        </div>
+        <button type="submit">Save</button>
+      </form>
+    </div>
+
+  </body>
+
+  <script
+    src="/options/index.js"
+    type="text/javascript"
+    charset="utf-8"
+  ></script>
+</html>
