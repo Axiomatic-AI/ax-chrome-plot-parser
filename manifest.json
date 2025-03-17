@@ -1,0 +1,51 @@
+{
+  "manifest_version": 3,
+  "name": "Axiomatic Plot Parser",
+  "version": "0.1",
+  "description": "Axiomatic Plot Parser is a browser extension that allows you to parse plots from images on the web.",
+
+  "homepage_url": "https://chromewebstore.google.com/detail/axiomatic-plot-parser/",
+
+  "icons": {
+    "16": "/icons/default/16x16.png",
+    "19": "/icons/default/19x19.png",
+    "38": "/icons/default/38x38.png",
+    "48": "/icons/default/48x48.png",
+    "128": "/icons/default/128x128.png"
+  },
+
+  "action": {
+    "default_icon": {
+      "16": "/icons/default/16x16.png",
+      "19": "/icons/default/19x19.png",
+      "38": "/icons/default/38x38.png",
+      "48": "/icons/default/48x48.png",
+      "128": "/icons/default/128x128.png"
+    },
+    "default_title": "Axiomatic Plot Parser"
+  },
+
+  "background": {
+    "service_worker": "background/index.js"
+  },
+
+  "options_page": "/options/index.html",
+
+  "web_accessible_resources": [
+    {
+      "matches": ["<all_urls>"],
+      "resources": ["/vendor/Jcrop.gif", "/content/pixel.png"]
+    }
+  ],
+
+  "commands": {
+    "take-screenshot": {
+      "description": "Parse a plot from the current page",
+      "suggested_key": {
+        "default": "Alt+S"
+      }
+    }
+  },
+
+  "permissions": ["storage", "scripting", "activeTab"]
+}
