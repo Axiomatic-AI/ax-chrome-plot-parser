@@ -29,7 +29,7 @@ function parseResult(image) {
   const formData = new FormData();
   formData.append("plot_img", file);
 
-  ax_api("document/plot/points", formData).then(async (response) => {
+  ax_api("document/plot/points?get_img_coords=True", formData).then(async (response) => {
     const plotInfo = response.plot_info;
     const axesInfo = response.axes_info;
     // Get the canvas element and its 2D drawing context
@@ -62,15 +62,8 @@ function parseResult(image) {
           const rgbColor = `rgb(${splitColor.join(",")})`;
           // Loop through each point in the points array
           Object.entries(pointsObj).forEach(([pId, point]) => {
-            const x =
-              (axesInfo.x_axis_len * (point.value_x - plotInfo.x_axis_min)) /
-                (plotInfo.x_axis_max - plotInfo.x_axis_min) +
-              axesInfo.origin[0];
-
-            const y =
-              axesInfo.origin[1] -
-              (axesInfo.y_axis_len * (point.value_y - plotInfo.y_axis_min)) /
-                (plotInfo.y_axis_max - plotInfo.y_axis_min);
+            const x = point.img_coord_x
+            const y = point.img_coord_y
 
             ctx.beginPath();
             ctx.arc(x, y, 4, 0, Math.PI * 2);
