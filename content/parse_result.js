@@ -183,7 +183,7 @@ async function ax_api(endpoint, args) {
           })
           .catch((error) => {
             console.error("Error calling API:", error);
-            displayError(error.message); // Display full error message
+            displayErrorTree();
             reject(error);
           });
       } else {
@@ -195,11 +195,15 @@ async function ax_api(endpoint, args) {
   });
 }
 
-function displayError(message) {
-  const errorBox = document.querySelector(".ax-error-message");
-  errorBox.textContent = message;
-  errorBox.style.display = "block";
-  errorBox.style.whiteSpace = "pre-wrap";
+let errorOccurred = false;
+
+function displayErrorTree() {
+  errorOccurred = true;
+
+  const container = document.querySelector(".broken-tree-container");
+  if (container) {
+    container.style.display = "flex";
+  }
 
   const logo = document.querySelector(".ax-logo");
   if (logo) {
@@ -207,9 +211,13 @@ function displayError(message) {
   }
 }
 
-
 // Prevent the page from being reloaded
 window.addEventListener("beforeunload", function (event) {
+  // If an error occured, no warning is shown if you leave page
+  if (errorOccurred) {
+    return;
+  }
+
   event.preventDefault();
   event.stopPropagation();
   return "Reloading the page will cause you to lose your work. Continue?";
