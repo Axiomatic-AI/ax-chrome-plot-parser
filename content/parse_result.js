@@ -152,38 +152,61 @@ function parseResult(image) {
 }
 
 async function ax_api(endpoint, args) {
-  var result;
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get(["ax_api_key"], async (items) => {
       if (items.ax_api_key) {
         var res = fetch(`https://api.axiomatic-ai.com/${endpoint}`, {
           method: "POST",
           headers: {
-            // 'Content-Type': 'application/json',
             "x-api-key": items.ax_api_key,
           },
           body: args,
         })
-          .then((response) => response.json())
+          .then(async (response) => {
+            if (!response.ok) {
+              let errorMessage = `API Error: ${response.status} ${response.statusText}`;
+              try {
+                const errorData = await response.json(); // Try to parse the error response as JSON
+                if (errorData && typeof errorData === "object") {
+                  errorMessage += ` - ${JSON.stringify(errorData)}`; // Append full error details
+                }
+              } catch (err) {
+                console.warn("Failed to parse error response as JSON", err);
+              }
+              throw new Error(errorMessage);
+            }
+            return response.json();
+          })
           .then((data) => {
-            result = data;
             console.log("API response", data);
-            return result;
+            resolve(data);
           })
           .catch((error) => {
             console.error("Error calling API:", error);
-            return null;
+            displayError(error.message); // Display full error message
+            reject(error);
           });
-        resolve(res);
       } else {
         chrome.runtime.openOptionsPage();
         window.close();
-        result = null;
         reject("API key not found");
       }
     });
   });
 }
+
+function displayError(message) {
+  const errorBox = document.querySelector(".ax-error-message");
+  errorBox.textContent = message;
+  errorBox.style.display = "block";
+  errorBox.style.whiteSpace = "pre-wrap";
+
+  const logo = document.querySelector(".ax-logo");
+  if (logo) {
+    logo.style.display = "none";
+  }
+}
+
 
 // Prevent the page from being reloaded
 window.addEventListener("beforeunload", function (event) {
