@@ -29,7 +29,7 @@ function parseResult(image) {
   const formData = new FormData();
   formData.append("plot_img", file);
 
-  ax_api("document/plot/points", formData).then(async (response) => {
+  ax_api("document/plot/points?get_img_coords=True", formData).then(async (response) => {
     const plotInfo = response.plot_info;
     const axesInfo = response.axes_info;
     // Get the canvas element and its 2D drawing context
@@ -62,15 +62,8 @@ function parseResult(image) {
           const rgbColor = `rgb(${splitColor.join(",")})`;
           // Loop through each point in the points array
           Object.entries(pointsObj).forEach(([pId, point]) => {
-            const x =
-              (axesInfo.x_axis_len * (point.value_x - plotInfo.x_axis_min)) /
-                (plotInfo.x_axis_max - plotInfo.x_axis_min) +
-              axesInfo.origin[0];
-
-            const y =
-              axesInfo.origin[1] -
-              (axesInfo.y_axis_len * (point.value_y - plotInfo.y_axis_min)) /
-                (plotInfo.y_axis_max - plotInfo.y_axis_min);
+            const x = point.img_coord_x
+            const y = point.img_coord_y
 
             ctx.beginPath();
             ctx.arc(x, y, 4, 0, Math.PI * 2);
@@ -152,41 +145,72 @@ function parseResult(image) {
 }
 
 async function ax_api(endpoint, args) {
-  var result;
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get(["ax_api_key"], async (items) => {
       if (items.ax_api_key) {
         var res = fetch(`https://api.axiomatic-ai.com/${endpoint}`, {
           method: "POST",
           headers: {
-            // 'Content-Type': 'application/json',
             "x-api-key": items.ax_api_key,
           },
           body: args,
         })
-          .then((response) => response.json())
+          .then(async (response) => {
+            if (!response.ok) {
+              let errorMessage = `API Error: ${response.status} ${response.statusText}`;
+              try {
+                const errorData = await response.json(); // Try to parse the error response as JSON
+                if (errorData && typeof errorData === "object") {
+                  errorMessage += ` - ${JSON.stringify(errorData)}`; // Append full error details
+                }
+              } catch (err) {
+                console.warn("Failed to parse error response as JSON", err);
+              }
+              throw new Error(errorMessage);
+            }
+            return response.json();
+          })
           .then((data) => {
-            result = data;
             console.log("API response", data);
-            return result;
+            resolve(data);
           })
           .catch((error) => {
             console.error("Error calling API:", error);
-            return null;
+            displayErrorTree();
+            reject(error);
           });
-        resolve(res);
       } else {
         chrome.runtime.openOptionsPage();
         window.close();
-        result = null;
         reject("API key not found");
       }
     });
   });
 }
 
+let errorOccurred = false;
+
+function displayErrorTree() {
+  errorOccurred = true;
+
+  const container = document.querySelector(".broken-tree-container");
+  if (container) {
+    container.style.display = "flex";
+  }
+
+  const logo = document.querySelector(".ax-logo");
+  if (logo) {
+    logo.style.display = "none";
+  }
+}
+
 // Prevent the page from being reloaded
 window.addEventListener("beforeunload", function (event) {
+  // If an error occured, no warning is shown if you leave page
+  if (errorOccurred) {
+    return;
+  }
+
   event.preventDefault();
   event.stopPropagation();
   return "Reloading the page will cause you to lose your work. Continue?";
